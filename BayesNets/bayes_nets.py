@@ -122,11 +122,9 @@ def files2models(file_paths, graph_info_package):
   """Takes a list of file paths and a graph info package and returns 
   a dict that maps each file path to a model trained on that file path"""
 
-  file_path_model_map = {file_path : 
-                         file2model(file_path, graph_info_package) 
-                         for file_path in file_paths}
-
-  return file_path_model_map
+  return {file_path : 
+          file2model(file_path, graph_info_package) 
+          for file_path in file_paths}
 
 def cpt_row2string(vertex, row, graph_info_package, delimiter):
   """Takes a vertex, a 3-tuple of row info, the graph info package 
@@ -142,11 +140,9 @@ def cpt_row2string(vertex, row, graph_info_package, delimiter):
                           for i in range(len(parent_values)) 
                           if parent_values[i] != '0']
 
-  if len(parent_value_strings) > 0:
-    parent_config_string = delimiter.join(parent_value_strings) + delimiter
-    row_string += parent_config_string
+  parent_config_string = delimiter.join(parent_value_strings) + delimiter if parent_value_strings else ""
 
-  return row_string
+  return row_string + parent_config_string
 
 def cpt2string(vertex, cpt, graph_info_package, delimiter):
   """Takes a vertex, that vertex's CPT, the graph info package and 
@@ -208,11 +204,9 @@ def calculate_numerators(model, query, datum, graph_info_package):
       new_parent_config_string = parent_config2string(new_parent_config)
       query_val_prob_map[val][vertex] = model[vertex][new_parent_config_string][vertex_val]
 
-  numerators = {val : 
-                reduce(lambda x,y: x*y, query_val_prob_map[val].values(), query_model_entry[val])
-                for val in query_vals}
-
-  return numerators
+  return {val : 
+          reduce(lambda x,y: x*y, query_val_prob_map[val].values(), query_model_entry[val])
+          for val in query_vals}
 
 def get_query_cpt(model, query, datum, graph_info_package):
   """Takes a model, a query variable, a data instance vector, a graph info 
@@ -224,11 +218,10 @@ def get_query_cpt(model, query, datum, graph_info_package):
   query_index = vertex_index_map[query]
   numerators = calculate_numerators(model, query, datum, graph_info_package)
   denominator = sum(numerators.values())
-  query_cpt = {val :
-               float(numerator)/denominator
-               for (val, numerator) in numerators.items()}
 
-  return query_cpt
+  return {val :
+          float(numerator)/denominator
+          for (val, numerator) in numerators.items()}
 
 def calculate_probability_query(model, query, datum, graph_info_package, unobserved_vars=None):
   """Takes the same arguments as calculate_probability_query except for an 
@@ -253,11 +246,9 @@ def calculate_probability_query(model, query, datum, graph_info_package, unobser
         new_config[unobserved_index] = val
         parent_configs.append(new_config)
 
-  query_cpt = {parent_config2string(parent_matrix[query_index] * parent_config) :
-               get_query_cpt(model, query, parent_config, graph_info_package)
-               for parent_config in parent_configs}
-
-  return query_cpt
+  return {parent_config2string(parent_matrix[query_index] * parent_config) :
+          get_query_cpt(model, query, parent_config, graph_info_package)
+          for parent_config in parent_configs}
 
 def calculate_map_query(model, query, datum, graph_info_package, unobserved_vars = None):
   """Takes a model, a query variable, a data instance vector, a graph info 
@@ -284,9 +275,8 @@ def datum2true_value(datum, query, graph_info_package):
   int_string_map = graph_info_package[2]
   query_index = vertex_index_map[query]
   datum_query_val = datum[query_index]
-  datum_query_string = int_string_map[query][datum_query_val]
 
-  return datum_query_string
+  return int_string_map[query][datum_query_val]
 
 def calculate_accuracy(model, testing_file_path, query, graph_info_package):
   """Takes a model, a file path for a test set, a query variable, a 
@@ -306,11 +296,9 @@ def calculate_accuracies(model_data_list, query, graph_info_package):
   """Takes a list of models mapped to test data, a query variable, a 
   graph info package and a parent matrix and returns a list of accuracies"""
 
-  model_stats_map = {training_file_path : 
-                     calculate_accuracy(model, testing_file_path, query, graph_info_package) 
-                     for (training_file_path, model, testing_file_path) in model_data_list}
-
-  return model_stats_map
+  return {training_file_path : 
+          calculate_accuracy(model, testing_file_path, query, graph_info_package) 
+          for (training_file_path, model, testing_file_path) in model_data_list}
    
 def accuracies2stats(model_stats_map):
   """Takes a list of accuracies and returns a 2-tuple of the mean
