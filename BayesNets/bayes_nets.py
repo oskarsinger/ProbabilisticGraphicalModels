@@ -230,11 +230,13 @@ def get_query_cpt(model, query, datum, graph_info_package):
 
   return query_cpt
 
-def calculate_probability_query(model, query, datum, graph_info_package, unobserved_vars=[]):
+def calculate_probability_query(model, query, datum, graph_info_package, unobserved_vars=None):
   """Takes the same arguments as calculate_probability_query except for an 
   additional argument, unobserved_vars, and returns the cpts for each of the
   new configurations resulting from the unobserved vars"""
 
+  if unobserved_vars is None:
+    unobserved_vars = []
   vertex_index_map = graph_info_package[0]
   int_string_map = graph_info_package[2]
   parent_matrix = graph_info_package[4]
@@ -257,7 +259,7 @@ def calculate_probability_query(model, query, datum, graph_info_package, unobser
 
   return query_cpt
 
-def calculate_map_query(model, query, datum, graph_info_package, unobserved_vars = []):
+def calculate_map_query(model, query, datum, graph_info_package, unobserved_vars = None):
   """Takes a model, a query variable, a data instance vector, a graph info 
   package and a parent matrix and returns the argmax for the CPT of the queried
   variable"""
@@ -335,7 +337,7 @@ def models2stats(model_data_list, query, graph_info_package):
 def main():
   """Here are some usage examples for the Bayesian Network suite"""
 
-  data_dir_path = "/home/oskar/GitRepos/PGMProjects/assignment1/Data/"
+  data_dir_path = "/home/oskar/GitRepos/ProbabilisticGraphicalModels/BayesNets/Data/"
   question_4_output_path = "params.txt"
   question_5_output_path = "queries.txt"
   question_4 = False
