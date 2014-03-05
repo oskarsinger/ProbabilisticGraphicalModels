@@ -43,9 +43,9 @@ def counts2probs(counts_map, parent_config_sums):
   for (vertex, counts) in counts_map.items():
     for (parent_config, value_map) in counts.items():
       config_sum = parent_config_sums[vertex][parent_config]
-      cpt_map[vertex][parent_config] = defaultdict(lambda: 1/config_sum)
-      for (value, count) in value_map.items(): 
-        cpt_map[vertex][parent_config][value] = float(count)/config_sum
+      cpt_map[vertex][parent_config] = {value :
+                                        float(count)/config_sum
+                                        for (value, count) in value_map.items()}
   
   return cpt_map
 
@@ -58,7 +58,7 @@ def data2counts(parent_configs):
   of dicts from vertices to parent configurations to counts, 
   parent_config_sums"""
 
-  counts_map = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 1)))
+  counts_map = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
   parent_config_counts = defaultdict(lambda: defaultdict(int))
 
   for (vertex, config_list) in parent_configs.items():
@@ -202,7 +202,10 @@ def calculate_numerators(model, query, datum, graph_info_package):
       new_parent_config = copy(parent_config)
       new_parent_config[query_index] = val
       new_parent_config_string = parent_config2string(new_parent_config)
-      query_val_prob_map[val][vertex] = model[vertex][new_parent_config_string][vertex_val]
+      current_entry = model[vertex][new_parent_config_string]
+      query_val_prob_map[val][vertex] = 0 \
+                                        if vertex_val not in current_entry else \
+                                        model[vertex][new_parent_config_string][vertex_val]
 
   return {val : 
           reduce(lambda x,y: x*y, query_val_prob_map[val].values(), query_model_entry[val])
@@ -261,7 +264,7 @@ def calculate_map_query(model, query, datum, graph_info_package, unobserved_vars
                        prob
                        for value_prob_map in query_cpt.values()
                        for (val, prob) in value_prob_map.items()}
-  sorted_cpt = sorted(query_cpt.items(), key=lambda (val, prob): prob)
+  sorted_cpt = sorted(query_result_list.items(), key=lambda (val, prob): prob)
   argmax = sorted_cpt[-1][0]
   
   return int_string_map[query][argmax]
@@ -305,6 +308,7 @@ def accuracies2stats(model_stats_map):
   and standard deviation for the given accuracies"""
 
   accuracies = model_stats_map.values()
+  print accuracies
   mean = float(sum(accuracies))/float(len(accuracies))
   mean_differences_squared = [(accuracy - mean)**2 
                               for accuracy in accuracies]
@@ -329,8 +333,8 @@ def main():
   question_4_output_path = "params.txt"
   question_5_output_path = "queries.txt"
   question_4 = False
-  question_5 = True
-  questions_6_and_7 = False
+  question_5 = False
+  questions_6_and_7 = True
 
   a = 'A'
   g = 'G'
