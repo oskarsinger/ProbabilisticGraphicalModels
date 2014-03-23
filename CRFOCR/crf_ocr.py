@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import fmin_l_bfgs_b
 from scipy.misc import logsumexp
-from scipy.sparse import coo_matrix
 from collections import defaultdict, OrderedDict
-from sets import Set
 
 def is_numeral(char):
 
