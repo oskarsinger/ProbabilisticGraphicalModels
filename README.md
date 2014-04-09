@@ -13,7 +13,7 @@ Coding projects from my PGM class @ UMass Amherst
   in the graph which possibly contain unobserved variables other than the query variable
 * Find the mean and standard deviation of MAP query accuracy on the heart disease variable for five pairs of training and testing data sets.
 
-####Assignment 2 (CRF OCR)
+####Assignment 2 (CRFOCR)
 
 * Build a linear-chain conditional random field (CRF) for optical character recognition (OCR) with binary pixel values as features and the ten most commonly used 
   letters of the alphabet as labels
@@ -22,3 +22,14 @@ Coding projects from my PGM class @ UMass Amherst
 * Implement the objective and gradient functions for learning in a CRF
 * Implement learning by optimizing the parameters for OCR on the given data set using an optimizer from SciPy (I used fmin\_l\_bfgs\_b)
 * Record training time, accuracy and optimized average conditional log likelihood for trainin sets of different sizes
+
+####Assignment 3 (GibbsCRFDenoise)
+
+* Build a grid-structured conditional random field (CRF) for image denoising with noisy pixel values as features and correct pixel values as labels
+* Condition the random variables associated with correct pixel values on the random variables associated with the original, noisy pixel values
+* Implement a by-pixel Gibbs sampler for the grid-structured CRF; random numbers are sampled from uniform distribution for binary-valued pixels and from normal 
+  distribution for real-valued, grayscale pixels
+* For the real-valued pixels, run the Gibbs sampler with both a single pair-wise weight and specific pair-wise weights that penalizes large deviations from 
+  original difference between neighboring pixels
+* Run the Gibbs sampler on binary-valued pixels both for a fixed number of iterations and until convergence, where convergence is defined as a difference between
+  the Mean Absolute Error of time step t and t-1 being less than a constant for three consecutive iterations
