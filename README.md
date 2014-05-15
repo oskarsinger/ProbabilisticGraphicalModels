@@ -1,7 +1,7 @@
 ProbabilisticGraphicalModels
 ==========================
 
-Coding projects from my PGM class @ UMass Amherst
+Coding projects from my PGM class @ UMass Amherst. Most projects are vectorized as much as possible and rely heavily on numpy for this vectorization.
 
 ### Assignments
 
@@ -33,3 +33,11 @@ Coding projects from my PGM class @ UMass Amherst
   original difference between neighboring pixels
 * Run the Gibbs sampler on binary-valued pixels both for a fixed number of iterations and until convergence, where convergence is defined as a difference between
   the Mean Absolute Error of time step t and t-1 being less than a constant for three consecutive iterations
+
+####Assignment 4 (RBMOCR)
+
+* Build a restricted Boltzmann machine (RBM) to infer hidden variable values from observed pixel values for MNIST hand-written digit images
+* Implement inference for an RBM by conditioning on the observed pixel values of an MNIST instance and using weights from training to calculate the hidden variable 
+  values
+* Implement training for the RBM's parameters using mini-batch stochastic gradient ascent where each batch consists of multiple MNIST training images
+* Use a multi-chain Gibbs sampler that alternates conditioning on the observed pixel values and the hidden variables values to calculate negative gradient terms
